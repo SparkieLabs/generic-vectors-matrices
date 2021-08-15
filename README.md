@@ -27,6 +27,20 @@ The code is based on the [non-generic implementations](https://github.com/dotnet
 The added generic vector and matrix types are designed to satisfy this existing .NET issue:
 [Add support System.Numerics.Vectors types with double precision](https://github.com/dotnet/runtime/issues/24168).
 
+As the Vector and Matrix classes themselves implement some of the generic math interfaces they can be used with generic math functions:
+```c#
+Vector3<double>[] data = { new(1.0, 2.0, 3.0), new(4.0, 5.0, 6.0) };
+var sum = Sum(data);
+
+public static T Sum<T>(IEnumerable<T> data)
+    where T : IAdditiveIdentity<T, T>, IAdditionOperators<T, T, T>
+{
+    T sum = T.AdditiveIdentity;
+    foreach (var item in data)
+        sum += item;
+    return sum;
+} 
+```
 ## Using in other projects
     
 To use outside this repo copy the files in the src directory to your own project and follow the [directions in the blog post](https://devblogs.microsoft.com/dotnet/preview-features-in-net-6-generic-math/#trying-out-the-features) to enable generic math.
