@@ -2,6 +2,8 @@
 
 THIS REPO IS EXPERIMENTAL AND SUBJECT TO BREAKING CHANGES!
 
+[![.NET](https://github.com/sparkie108/generic-vectors-matrices/actions/workflows/tests.yml/badge.svg)](https://github.com/sparkie108/generic-vectors-matrices/actions/workflows/tests.yml)
+
 This repo contains an implementation of generic versions of the following .NET types using the new generic math feature added as preview in .NET 6:
 
 | Existing type | Generic implementation (this repo) |
