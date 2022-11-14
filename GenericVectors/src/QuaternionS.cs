@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 
 namespace System.Numerics
 {
-    [RequiresPreviewFeatures]
     public partial struct QuaternionS
     {
         // "Friendly" Operators
@@ -15,7 +13,7 @@ namespace System.Numerics
         /// <param name="value">The value for which to compute its unary plus.</param>
         /// <returns>The unary plus of <paramref name="value" />.</returns>
         public static Quaternion<T> Plus<T>(in Quaternion<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return value;
         }
@@ -25,7 +23,7 @@ namespace System.Numerics
         /// <returns>The negated quaternion.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion<T> Negate<T>(in Quaternion<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return -value;
         }
@@ -36,7 +34,7 @@ namespace System.Numerics
         /// <returns>The quaternion that contains the summed values of <paramref name="left" /> and <paramref name="right" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion<T> Add<T>(in Quaternion<T> left, in Quaternion<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left + right;
         }
@@ -47,7 +45,7 @@ namespace System.Numerics
         /// <returns>The quaternion containing the values that result from subtracting each element in <paramref name="right" /> from its corresponding element in <paramref name="left" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion<T> Subtract<T>(in Quaternion<T> left, in Quaternion<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left - right;
         }
@@ -58,7 +56,7 @@ namespace System.Numerics
         /// <returns>The product quaternion.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion<T> Multiply<T>(in Quaternion<T> left, in Quaternion<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left * right;
         }
@@ -69,7 +67,7 @@ namespace System.Numerics
         /// <returns>The quaternion that results from dividing <paramref name="left" /> by <paramref name="right" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion<T> Divide<T>(in Quaternion<T> left, in Quaternion<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left / right;
         }
@@ -80,7 +78,7 @@ namespace System.Numerics
         /// <returns>The scaled quaternion.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion<T> Multiply<T>(in Quaternion<T> left, T right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left * right;
         }
@@ -92,7 +90,7 @@ namespace System.Numerics
         /// <param name="right">The second quaternion rotation in the series.</param>
         /// <returns>A new quaternion representing the concatenation of the <paramref name="left" /> rotation followed by the <paramref name="right" /> rotation.</returns>
         public static Quaternion<T> Concatenate<T>(in Quaternion<T> left, in Quaternion<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             // Concatenate rotation is actually q2 * q1 instead of q1 * q2.
             // So that's why value2 goes q1 and value1 goes q2.
@@ -124,7 +122,7 @@ namespace System.Numerics
         /// <param name="value">The quaternion.</param>
         /// <returns>A new quaternion that is the conjugate of <see langword="value" />.</returns>
         public static Quaternion<T> Conjugate<T>(in Quaternion<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                 -value.X,
@@ -139,9 +137,9 @@ namespace System.Numerics
         /// <returns>The newly created quaternion.</returns>
         /// <remarks><paramref name="axis" /> vector must be normalized before calling this method or the resulting <see cref="System.Numerics.Quaternion" /> will be incorrect.</remarks>
         public static Quaternion<T> CreateFromAxisAngle<T>(in Vector3<T> axis, T angle)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            T halfAngle = angle * T.Create(0.5);
+            T halfAngle = angle * T.CreateChecked(0.5);
             T s = T.Sin(halfAngle);
             T c = T.Cos(halfAngle);
 
@@ -156,28 +154,28 @@ namespace System.Numerics
         /// <param name="matrix">The rotation matrix.</param>
         /// <returns>The newly created quaternion.</returns>
         public static Quaternion<T> CreateFromRotationMatrix<T>(in Matrix4x4<T> matrix)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T trace = matrix.M11 + matrix.M22 + matrix.M33;
 
             if (trace > T.Zero)
             {
                 T s = T.Sqrt(trace + T.One);
-                T invS = T.Create(0.5) / s;
+                T invS = T.CreateChecked(0.5) / s;
                 return new(
                     (matrix.M23 - matrix.M32) * invS,
                     (matrix.M31 - matrix.M13) * invS,
                     (matrix.M12 - matrix.M21) * invS,
-                    s * T.Create(0.5));
+                    s * T.CreateChecked(0.5));
             }
             else
             {
                 if (matrix.M11 >= matrix.M22 && matrix.M11 >= matrix.M33)
                 {
                     T s = T.Sqrt(T.One + matrix.M11 - matrix.M22 - matrix.M33);
-                    T invS = T.Create(0.5) / s;
+                    T invS = T.CreateChecked(0.5) / s;
                     return new(
-                        T.Create(0.5) * s,
+                        T.CreateChecked(0.5) * s,
                         (matrix.M12 + matrix.M21) * invS,
                         (matrix.M13 + matrix.M31) * invS,
                         (matrix.M23 - matrix.M32) * invS);
@@ -185,21 +183,21 @@ namespace System.Numerics
                 if (matrix.M22 > matrix.M33)
                 {
                     T s = T.Sqrt(T.One + matrix.M22 - matrix.M11 - matrix.M33);
-                    T invS = T.Create(0.5) / s;
+                    T invS = T.CreateChecked(0.5) / s;
                     return new(
                         (matrix.M21 + matrix.M12) * invS,
-                        T.Create(0.5) * s,
+                        T.CreateChecked(0.5) * s,
                         (matrix.M32 + matrix.M23) * invS,
                         (matrix.M31 - matrix.M13) * invS);
                 }
                 else
                 {
                     T s = T.Sqrt(T.One + matrix.M33 - matrix.M11 - matrix.M22);
-                    T invS = T.Create(0.5) / s;
+                    T invS = T.CreateChecked(0.5) / s;
                     return new(
                         (matrix.M31 + matrix.M13) * invS,
                         (matrix.M32 + matrix.M23) * invS,
-                        T.Create(0.5) * s,
+                        T.CreateChecked(0.5) * s,
                         (matrix.M12 - matrix.M21) * invS);
                 }
             }
@@ -211,21 +209,21 @@ namespace System.Numerics
         /// <param name="roll">The roll angle, in radians, around the Z axis.</param>
         /// <returns>The resulting quaternion.</returns>
         public static Quaternion<T> CreateFromYawPitchRoll<T>(T yaw, T pitch, T roll)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             //  Roll first, about axis the object is facing, then
             //  pitch upward, then yaw to face into the new heading
             T sr, cr, sp, cp, sy, cy;
 
-            T halfRoll = roll * T.Create(0.5);
+            T halfRoll = roll * T.CreateChecked(0.5);
             sr = T.Sin(halfRoll);
             cr = T.Cos(halfRoll);
 
-            T halfPitch = pitch * T.Create(0.5);
+            T halfPitch = pitch * T.CreateChecked(0.5);
             sp = T.Sin(halfPitch);
             cp = T.Cos(halfPitch);
 
-            T halfYaw = yaw * T.Create(0.5);
+            T halfYaw = yaw * T.CreateChecked(0.5);
             sy = T.Sin(halfYaw);
             cy = T.Cos(halfYaw);
 
@@ -241,7 +239,7 @@ namespace System.Numerics
         /// <param name="right">The second quaternion.</param>
         /// <returns>The dot product.</returns>
         public static T Dot<T>(in Quaternion<T> left, in Quaternion<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left.X * right.X +
                    left.Y * right.Y +
@@ -253,7 +251,7 @@ namespace System.Numerics
         /// <param name="value">The quaternion.</param>
         /// <returns>The inverted quaternion.</returns>
         public static Quaternion<T> Inverse<T>(in Quaternion<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             //  -1   (       a              -v       )
             // q   = ( -------------   ------------- )
@@ -275,7 +273,7 @@ namespace System.Numerics
         /// <param name="amount">The relative weight of <paramref name="max" /> in the interpolation.</param>
         /// <returns>The interpolated quaternion.</returns>
         public static Quaternion<T> Lerp<T>(in Quaternion<T> min, in Quaternion<T> max, T amount)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T t = amount;
             T t1 = T.One - t;
@@ -317,9 +315,9 @@ namespace System.Numerics
         /// <param name="amount">The relative weight of the second quaternion in the interpolation.</param>
         /// <returns>The interpolated quaternion.</returns>
         public static Quaternion<T> Slerp<T>(in Quaternion<T> min, in Quaternion<T> max, T amount)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            T slerpEpsilon = T.Create(1e-6);
+            T slerpEpsilon = T.CreateChecked(1e-6);
 
             T t = amount;
 
@@ -364,7 +362,7 @@ namespace System.Numerics
         /// <param name="value">The quaternion to normalize.</param>
         /// <returns>The normalized quaternion.</returns>
         public static Quaternion<T> Normalize<T>(in Quaternion<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T ls = value.X * value.X + value.Y * value.Y + value.Z * value.Z + value.W * value.W;
 

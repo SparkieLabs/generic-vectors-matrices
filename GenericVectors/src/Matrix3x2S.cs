@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 
 namespace System.Numerics
 {
-    [RequiresPreviewFeatures]
     public partial struct Matrix3x2S
     {
         // "Friendly" Operators
@@ -15,7 +13,7 @@ namespace System.Numerics
         /// <param name="value">The value for which to compute its unary plus.</param>
         /// <returns>The unary plus of <paramref name="value" />.</returns>
         public static Matrix3x2<T> Plus<T>(in Matrix3x2<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return value;
         }
@@ -25,7 +23,7 @@ namespace System.Numerics
         /// <returns>The negated matrix.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3x2<T> Negate<T>(in Matrix3x2<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return -value;
         }
@@ -36,7 +34,7 @@ namespace System.Numerics
         /// <returns>The matrix that contains the summed values of <paramref name="value1" /> and <paramref name="value2" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3x2<T> Add<T>(in Matrix3x2<T> left, in Matrix3x2<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left + right;
         }
@@ -47,7 +45,7 @@ namespace System.Numerics
         /// <returns>The matrix containing the values that result from subtracting each element in <paramref name="right" /> from its corresponding element in <paramref name="left" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3x2<T> Subtract<T>(in Matrix3x2<T> left, in Matrix3x2<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left - right;
         }
@@ -58,7 +56,7 @@ namespace System.Numerics
         /// <returns>The product matrix.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3x2<T> Multiply<T>(in Matrix3x2<T> left, in Matrix3x2<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left * right;
         }
@@ -70,7 +68,7 @@ namespace System.Numerics
         /// <param name="right">The scaling value to use.</param>
         /// <returns>The resulting matrix.</returns>
         public static Matrix3x2<T> Multiply<T>(in Matrix3x2<T> left, T right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left * right;
         }
@@ -81,11 +79,11 @@ namespace System.Numerics
         /// <param name="radians">The amount of rotation, in radians.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix3x2<T> CreateRotation<T>(T radians)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            T epsilon = T.Create(0.001 * Math.PI / 180.0);     // 0.1% of a degree
+            T epsilon = T.CreateChecked(0.001 * Math.PI / 180.0);     // 0.1% of a degree
 
-            radians = T.IEEERemainder(radians, T.Tau);
+            radians = T.Ieee754Remainder(radians, T.Tau);
 
             T c, s;
             if (radians > -epsilon && radians < epsilon)
@@ -94,7 +92,7 @@ namespace System.Numerics
                 c = T.One;
                 s = T.Zero;
             }
-            else if (radians > T.Pi / T.Create(2.0) - epsilon && radians < T.Pi / T.Create(2.0) + epsilon)
+            else if (radians > T.Pi / T.CreateChecked(2.0) - epsilon && radians < T.Pi / T.CreateChecked(2.0) + epsilon)
             {
                 // Exact case for 90 degree rotation.
                 c = T.Zero;
@@ -106,7 +104,7 @@ namespace System.Numerics
                 c = -T.One;
                 s = T.Zero;
             }
-            else if (radians > -T.Pi / T.Create(2.0) - epsilon && radians < -T.Pi / T.Create(2.0) + epsilon)
+            else if (radians > -T.Pi / T.CreateChecked(2.0) - epsilon && radians < -T.Pi / T.CreateChecked(2.0) + epsilon)
             {
                 // Exact case for 270 degree rotation.
                 c = T.Zero;
@@ -133,11 +131,11 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix3x2<T> CreateRotation<T>(T radians, in Vector2<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            T epsilon = T.Create(0.001 * Math.PI / 180.0);     // 0.1% of a degree
+            T epsilon = T.CreateChecked(0.001 * Math.PI / 180.0);     // 0.1% of a degree
 
-            radians = T.IEEERemainder(radians, T.Tau);
+            radians = T.Ieee754Remainder(radians, T.Tau);
 
             T c, s;
             if (radians > -epsilon && radians < epsilon)
@@ -146,7 +144,7 @@ namespace System.Numerics
                 c = T.One;
                 s = T.Zero;
             }
-            else if (radians > T.Pi / T.Create(2.0) - epsilon && radians < T.Pi / T.Create(2.0) + epsilon)
+            else if (radians > T.Pi / T.CreateChecked(2.0) - epsilon && radians < T.Pi / T.CreateChecked(2.0) + epsilon)
             {
                 // Exact case for 90 degree rotation.
                 c = T.Zero;
@@ -158,7 +156,7 @@ namespace System.Numerics
                 c = -T.One;
                 s = T.Zero;
             }
-            else if (radians > -T.Pi / T.Create(2.0) - epsilon && radians < -T.Pi / T.Create(2.0) + epsilon)
+            else if (radians > -T.Pi / T.CreateChecked(2.0) - epsilon && radians < -T.Pi / T.CreateChecked(2.0) + epsilon)
             {
                 // Exact case for 270 degree rotation.
                 c = T.Zero;
@@ -187,7 +185,7 @@ namespace System.Numerics
         /// <param name="scale">The uniform scale to use.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix3x2<T> CreateScale<T>(T scale)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                 scale, T.Zero,
@@ -200,7 +198,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center offset.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix3x2<T> CreateScale<T>(T scale, in Vector2<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T tx = centerPoint.X * (T.One - scale);
             T ty = centerPoint.Y * (T.One - scale);
@@ -216,7 +214,7 @@ namespace System.Numerics
         /// <param name="scaleY">The value to scale by on the Y axis.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix3x2<T> CreateScale<T>(T scaleX, T scaleY)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                 scaleX, T.Zero,
@@ -230,7 +228,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix3x2<T> CreateScale<T>(T scaleX, T scaleY, in Vector2<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T tx = centerPoint.X * (T.One - scaleX);
             T ty = centerPoint.Y * (T.One - scaleY);
@@ -245,7 +243,7 @@ namespace System.Numerics
         /// <param name="scale">The scale to use.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix3x2<T> CreateScale<T>(in Vector2<T> scale)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                 scale.X, T.Zero,
@@ -258,7 +256,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center offset.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix3x2<T> CreateScale<T>(in Vector2<T> scale, in Vector2<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T tx = centerPoint.X * (T.One - scale.X);
             T ty = centerPoint.Y * (T.One - scale.Y);
@@ -274,7 +272,7 @@ namespace System.Numerics
         /// <param name="radiansY">The Y angle, in radians.</param>
         /// <returns>The skew matrix.</returns>
         public static Matrix3x2<T> CreateSkew<T>(T radiansX, T radiansY)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T xTan = T.Tan(radiansX);
             T yTan = T.Tan(radiansY);
@@ -291,7 +289,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The skew matrix.</returns>
         public static Matrix3x2<T> CreateSkew<T>(T radiansX, T radiansY, in Vector2<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T xTan = T.Tan(radiansX);
             T yTan = T.Tan(radiansY);
@@ -310,7 +308,7 @@ namespace System.Numerics
         /// <param name="yPosition">The Y position.</param>
         /// <returns>The translation matrix.</returns>
         public static Matrix3x2<T> CreateTranslation<T>(T positionX, T positionY)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                 T.One, T.Zero,
@@ -322,7 +320,7 @@ namespace System.Numerics
         /// <param name="position">The translation position.</param>
         /// <returns>The translation matrix.</returns>
         public static Matrix3x2<T> CreateTranslation<T>(in Vector2<T> position)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                 T.One, T.Zero,
@@ -335,7 +333,7 @@ namespace System.Numerics
         /// <param name="result">When this method returns, contains the inverted matrix if the operation succeeded.</param>
         /// <returns><see langword="true" /> if <paramref name="matrix" /> was converted successfully; otherwise,  <see langword="false" />.</returns>
         public static bool Invert<T>(in Matrix3x2<T> matrix, out Matrix3x2<T> result)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T det = (matrix.M11 * matrix.M22) - (matrix.M21 * matrix.M12);
 
@@ -364,7 +362,7 @@ namespace System.Numerics
         /// <param name="amount">The relative weighting of <paramref name="matrix2" />.</param>
         /// <returns>The interpolated matrix.</returns>
         public static Matrix3x2<T> Lerp<T>(in Matrix3x2<T> min, in Matrix3x2<T> max, T amount)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new(
                  // First row

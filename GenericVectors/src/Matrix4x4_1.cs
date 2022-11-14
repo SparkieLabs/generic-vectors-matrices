@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using System.Text;
 
 namespace System.Numerics
@@ -13,12 +12,11 @@ namespace System.Numerics
     /// [!INCLUDE[vectors-are-rows-paragraph](~/includes/system-numerics-vectors-are-rows.md)]
     /// ]]></format></remarks>
     [Intrinsic]
-    [RequiresPreviewFeatures]
     public readonly record struct Matrix4x4<T> :
         IAdditionOperators<Matrix4x4<T>, Matrix4x4<T>, Matrix4x4<T>>,
         IAdditiveIdentity<Matrix4x4<T>, Matrix4x4<T>>,
         IEquatable<Matrix4x4<T>>,
-        IEqualityOperators<Matrix4x4<T>, Matrix4x4<T>>,
+        IEqualityOperators<Matrix4x4<T>, Matrix4x4<T>, bool>,
         IFormattable,
         IMultiplicativeIdentity<Matrix4x4<T>, Matrix4x4<T>>,
         IMultiplyOperators<Matrix4x4<T>, Matrix4x4<T>, Matrix4x4<T>>,
@@ -26,12 +24,12 @@ namespace System.Numerics
         ISubtractionOperators<Matrix4x4<T>, Matrix4x4<T>, Matrix4x4<T>>,
         IUnaryNegationOperators<Matrix4x4<T>, Matrix4x4<T>>,
         IUnaryPlusOperators<Matrix4x4<T>, Matrix4x4<T>>
-        where T : struct, IFloatingPoint<T>
+        where T : struct, IFloatingPointIeee754<T>
     {
         // Fields
-        internal static readonly T BillboardEpsilon = T.Create(1e-4);
-        internal static readonly T BillboardMinAngle = T.Create(1.0 - (0.1 * (Math.PI / 180.0))); // 0.1 degrees
-        internal static readonly T DecomposeEpsilon = T.Create(0.0001);
+        internal static readonly T BillboardEpsilon = T.CreateChecked(1e-4);
+        internal static readonly T BillboardMinAngle = T.CreateChecked(1.0 - (0.1 * (Math.PI / 180.0))); // 0.1 degrees
+        internal static readonly T DecomposeEpsilon = T.CreateChecked(0.0001);
 
         private static readonly Matrix4x4<T> _identity = new Matrix4x4<T>
         (

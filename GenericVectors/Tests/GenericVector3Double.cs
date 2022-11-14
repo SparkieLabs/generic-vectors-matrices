@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using Xunit;
 using GMatrix4x4 = System.Numerics.Matrix4x4<double>;
 using GQuaternion = System.Numerics.Quaternion<double>;
@@ -13,7 +12,6 @@ using GVector3 = System.Numerics.Vector3<double>;
 
 namespace System.Numerics.Tests
 {
-    [RequiresPreviewFeatures]
     public class Vector3DoubleTests
     {
         [Fact]

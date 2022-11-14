@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using Xunit;
 using GMatrix3x2 = System.Numerics.Matrix3x2<double>;
 using GMatrix4x4 = System.Numerics.Matrix4x4<double>;
@@ -13,7 +12,6 @@ using GVector2 = System.Numerics.Vector2<double>;
 
 namespace System.Numerics.Tests
 {
-    [RequiresPreviewFeatures]
     public class GenericVector2DoubleTests
     {
         [Fact]

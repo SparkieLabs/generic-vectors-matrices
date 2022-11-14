@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using Xunit;
 using GMatrix4x4 = System.Numerics.Matrix4x4<double>;
 using GPlane = System.Numerics.Plane<double>;
@@ -14,7 +13,6 @@ using GVector4 = System.Numerics.Vector4<double>;
 
 namespace System.Numerics.Tests
 {
-    [RequiresPreviewFeatures]
     public class GenericPlaneDoubleTests
     {
         // A test for Equals (Plane)

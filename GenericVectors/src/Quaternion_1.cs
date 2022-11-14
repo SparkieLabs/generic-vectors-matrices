@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using System.Text;
 
 namespace System.Numerics
@@ -12,13 +11,12 @@ namespace System.Numerics
     /// <remarks>The <see cref="System.Numerics.Quaternion" /> structure is used to efficiently rotate an object about the (x,y,z) vector by the angle theta, where:
     /// <c>w = cos(theta/2)</c></remarks>
     [Intrinsic]
-    [RequiresPreviewFeatures]
     public readonly record struct Quaternion<T> :
         IAdditionOperators<Quaternion<T>, Quaternion<T>, Quaternion<T>>,
         IAdditiveIdentity<Quaternion<T>, Quaternion<T>>,
         IDivisionOperators<Quaternion<T>, Quaternion<T>, Quaternion<T>>,
         IEquatable<Quaternion<T>>,
-        IEqualityOperators<Quaternion<T>, Quaternion<T>>,
+        IEqualityOperators<Quaternion<T>, Quaternion<T>, bool>,
         IFormattable,
         IMultiplicativeIdentity<Quaternion<T>, Quaternion<T>>,
         IMultiplyOperators<Quaternion<T>, Quaternion<T>, Quaternion<T>>,
@@ -26,7 +24,7 @@ namespace System.Numerics
         ISubtractionOperators<Quaternion<T>, Quaternion<T>, Quaternion<T>>,
         IUnaryNegationOperators<Quaternion<T>, Quaternion<T>>,
         IUnaryPlusOperators<Quaternion<T>, Quaternion<T>>
-        where T : struct, IFloatingPoint<T>
+        where T : struct, IFloatingPointIeee754<T>
     {
         // Fields
 

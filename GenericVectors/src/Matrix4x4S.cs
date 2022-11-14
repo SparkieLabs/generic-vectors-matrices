@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 
 namespace System.Numerics
 {
-    [RequiresPreviewFeatures]
     public partial struct Matrix4x4S
     {
         // "Friendly" Operators
@@ -16,7 +14,7 @@ namespace System.Numerics
         /// <returns>The unary plus of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix4x4<T> Plus<T>(in Matrix4x4<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return value;
         }
@@ -26,7 +24,7 @@ namespace System.Numerics
         /// <returns>The negated matrix.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix4x4<T> Negate<T>(in Matrix4x4<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return -value;
         }
@@ -37,7 +35,7 @@ namespace System.Numerics
         /// <returns>The matrix that contains the summed values of <paramref name="value1" /> and <paramref name="value2" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix4x4<T> Add<T>(in Matrix4x4<T> left, in Matrix4x4<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left + right;
         }
@@ -48,7 +46,7 @@ namespace System.Numerics
         /// <returns>The matrix containing the values that result from subtracting each element in <paramref name="right" /> from its corresponding element in <paramref name="left" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix4x4<T> Subtract<T>(in Matrix4x4<T> left, in Matrix4x4<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left - right;
         }
@@ -59,7 +57,7 @@ namespace System.Numerics
         /// <returns>The product matrix.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix4x4<T> Multiply<T>(in Matrix4x4<T> left, in Matrix4x4<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left * right;
         }
@@ -70,7 +68,7 @@ namespace System.Numerics
         /// <returns>The scaled matrix.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix4x4<T> Multiply<T>(in Matrix4x4<T> left, T right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left * right;
         }
@@ -84,7 +82,7 @@ namespace System.Numerics
         /// <param name="cameraForwardVector">The forward vector of the camera.</param>
         /// <returns>The created billboard.</returns>
         public static Matrix4x4<T> CreateBillboard<T>(in Vector3<T> objectPosition, in Vector3<T> cameraPosition, in Vector3<T> cameraUpVector, in Vector3<T> cameraForwardVector)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             Vector3<T> zaxis = objectPosition - cameraPosition;
             T norm = zaxis.LengthSquared();
@@ -131,7 +129,7 @@ namespace System.Numerics
         /// <param name="objectForwardVector">The forward vector of the object.</param>
         /// <returns>The billboard matrix.</returns>
         public static Matrix4x4<T> CreateConstrainedBillboard<T>(in Vector3<T> objectPosition, in Vector3<T> cameraPosition, in Vector3<T> rotateAxis, in Vector3<T> cameraForwardVector, in Vector3<T> objectForwardVector)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             // Treat the case when object and camera positions are too close.
             Vector3<T> faceDir = objectPosition - cameraPosition;
@@ -201,7 +199,7 @@ namespace System.Numerics
         /// <param name="angle">The angle to rotate around <paramref name="axis" />, in radians.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateFromAxisAngle<T>(in Vector3<T> axis, T angle)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             // a: angle
             // x, y, z: unit vector for axis.
@@ -259,7 +257,7 @@ namespace System.Numerics
         /// <param name="quaternion">The source Quaternion.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateFromQuaternion<T>(in Quaternion<T> quaternion)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T xx = quaternion.X * quaternion.X;
             T yy = quaternion.Y * quaternion.Y;
@@ -273,19 +271,19 @@ namespace System.Numerics
             T wx = quaternion.X * quaternion.W;
 
             return new(
-                T.One - T.Create(2.0) * (yy + zz),
-                T.Create(2.0) * (xy + wz),
-                T.Create(2.0) * (xz - wy),
+                T.One - T.CreateChecked(2.0) * (yy + zz),
+                T.CreateChecked(2.0) * (xy + wz),
+                T.CreateChecked(2.0) * (xz - wy),
                 T.Zero,
 
-                T.Create(2.0) * (xy - wz),
-                T.One - T.Create(2.0) * (zz + xx),
-                T.Create(2.0) * (yz + wx),
+                T.CreateChecked(2.0) * (xy - wz),
+                T.One - T.CreateChecked(2.0) * (zz + xx),
+                T.CreateChecked(2.0) * (yz + wx),
                 T.Zero,
 
-                T.Create(2.0) * (xz + wy),
-                T.Create(2.0) * (yz - wx),
-                T.One - T.Create(2.0) * (yy + xx),
+                T.CreateChecked(2.0) * (xz + wy),
+                T.CreateChecked(2.0) * (yz - wx),
+                T.One - T.CreateChecked(2.0) * (yy + xx),
                 T.Zero,
 
                 T.Zero,
@@ -300,7 +298,7 @@ namespace System.Numerics
         /// <param name="roll">The angle of rotation, in radians, around the Z axis.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateFromYawPitchRoll<T>(T yaw, T pitch, T roll)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             Quaternion<T> q = QuaternionS.CreateFromYawPitchRoll(yaw, pitch, roll);
             return CreateFromQuaternion(q);
@@ -312,7 +310,7 @@ namespace System.Numerics
         /// <param name="cameraUpVector">The direction that is "up" from the camera's point of view.</param>
         /// <returns>The view matrix.</returns>
         public static Matrix4x4<T> CreateLookAt<T>(in Vector3<T> cameraPosition, in Vector3<T> cameraTarget, in Vector3<T> cameraUpVector)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             Vector3<T> zaxis = Vector3S.Normalize(cameraPosition - cameraTarget);
             Vector3<T> xaxis = Vector3S.Normalize(Vector3S.Cross(cameraUpVector, zaxis));
@@ -347,12 +345,12 @@ namespace System.Numerics
         /// <param name="zFarPlane">The maximum Z-value of the view volume.</param>
         /// <returns>The orthographic projection matrix.</returns>
         public static Matrix4x4<T> CreateOrthographic<T>(T width, T height, T zNearPlane, T zFarPlane)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
-                M11 = T.Create(2.0) / width,
-                M22 = T.Create(2.0) / height,
+                M11 = T.CreateChecked(2.0) / width,
+                M22 = T.CreateChecked(2.0) / height,
                 M33 = T.One / (zNearPlane - zFarPlane),
                 M43 = zNearPlane / (zNearPlane - zFarPlane)
             };
@@ -367,12 +365,12 @@ namespace System.Numerics
         /// <param name="zFarPlane">The maximum Z-value of the view volume.</param>
         /// <returns>The orthographic projection matrix.</returns>
         public static Matrix4x4<T> CreateOrthographicOffCenter<T>(T left, T right, T bottom, T top, T zNearPlane, T zFarPlane)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
-                M11 = T.Create(2.0) / (right - left),
-                M22 = T.Create(2.0) / (top - bottom),
+                M11 = T.CreateChecked(2.0) / (right - left),
+                M22 = T.CreateChecked(2.0) / (top - bottom),
                 M33 = T.One / (zNearPlane - zFarPlane),
                 M41 = (left + right) / (left - right),
                 M42 = (top + bottom) / (bottom - top),
@@ -392,7 +390,7 @@ namespace System.Numerics
         /// -or-
         /// <paramref name="nearPlaneDistance" /> is greater than or equal to <paramref name="farPlaneDistance" />.</exception>
         public static Matrix4x4<T> CreatePerspective<T>(T width, T height, T nearPlaneDistance, T farPlaneDistance)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             if (nearPlaneDistance <= T.Zero)
                 throw new ArgumentOutOfRangeException(nameof(nearPlaneDistance));
@@ -406,13 +404,13 @@ namespace System.Numerics
             T negFarRange = T.IsInfinity(farPlaneDistance) ? -T.One : farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
 
             return new(
-                T.Create(2.0) * nearPlaneDistance / width,
+                T.CreateChecked(2.0) * nearPlaneDistance / width,
                 T.Zero,
                 T.Zero,
                 T.Zero,
 
                 T.Zero,
-                T.Create(2.0) * nearPlaneDistance / height,
+                T.CreateChecked(2.0) * nearPlaneDistance / height,
                 T.Zero,
                 T.Zero,
 
@@ -442,7 +440,7 @@ namespace System.Numerics
         /// -or-
         /// <paramref name="nearPlaneDistance" /> is greater than or equal to <paramref name="farPlaneDistance" />.</exception>
         public static Matrix4x4<T> CreatePerspectiveFieldOfView<T>(T fieldOfView, T aspectRatio, T nearPlaneDistance, T farPlaneDistance)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             if (fieldOfView <= T.Zero || fieldOfView >= T.Pi)
                 throw new ArgumentOutOfRangeException(nameof(fieldOfView));
@@ -456,7 +454,7 @@ namespace System.Numerics
             if (nearPlaneDistance >= farPlaneDistance)
                 throw new ArgumentOutOfRangeException(nameof(nearPlaneDistance));
 
-            T yScale = T.One / T.Tan(fieldOfView * T.Create(0.5));
+            T yScale = T.One / T.Tan(fieldOfView * T.CreateChecked(0.5));
             T xScale = yScale / aspectRatio;
 
             T negFarRange = T.IsInfinity(farPlaneDistance) ? -T.One : farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
@@ -497,7 +495,7 @@ namespace System.Numerics
         /// -or-
         /// <paramref name="nearPlaneDistance" /> is greater than or equal to <paramref name="farPlaneDistance" />.</exception>
         public static Matrix4x4<T> CreatePerspectiveOffCenter<T>(T left, T right, T bottom, T top, T nearPlaneDistance, T farPlaneDistance)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             if (nearPlaneDistance <= T.Zero)
                 throw new ArgumentOutOfRangeException(nameof(nearPlaneDistance));
@@ -511,13 +509,13 @@ namespace System.Numerics
             T negFarRange = T.IsInfinity(farPlaneDistance) ? -T.One : farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
 
             return new(
-                T.Create(2.0) * nearPlaneDistance / (right - left),
+                T.CreateChecked(2.0) * nearPlaneDistance / (right - left),
                 T.Zero,
                 T.Zero,
                 T.Zero,
 
                 T.Zero,
-                T.Create(2.0) * nearPlaneDistance / (top - bottom),
+                T.CreateChecked(2.0) * nearPlaneDistance / (top - bottom),
                 T.Zero,
                 T.Zero,
 
@@ -536,7 +534,7 @@ namespace System.Numerics
         /// <param name="value">The plane about which to create a reflection.</param>
         /// <returns>A new matrix expressing the reflection.</returns>
         public static Matrix4x4<T> CreateReflection<T>(in Plane<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             var normalized = PlaneS.Normalize(value);
 
@@ -544,9 +542,9 @@ namespace System.Numerics
             T b = normalized.Normal.Y;
             T c = normalized.Normal.Z;
 
-            T fa = T.Create(-2.0) * a;
-            T fb = T.Create(-2.0) * b;
-            T fc = T.Create(-2.0) * c;
+            T fa = T.CreateChecked(-2.0) * a;
+            T fb = T.CreateChecked(-2.0) * b;
+            T fc = T.CreateChecked(-2.0) * c;
 
             return new(
                 fa * a + T.One,
@@ -574,7 +572,7 @@ namespace System.Numerics
         /// <param name="radians">The amount, in radians, by which to rotate around the X axis.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateRotationX<T>(T radians)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T c = T.Cos(radians);
             T s = T.Sin(radians);
@@ -599,7 +597,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateRotationX<T>(T radians, in Vector3<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T c = T.Cos(radians);
             T s = T.Sin(radians);
@@ -627,7 +625,7 @@ namespace System.Numerics
         /// <param name="radians">The amount, in radians, by which to rotate around the Y-axis.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateRotationY<T>(T radians)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T c = T.Cos(radians);
             T s = T.Sin(radians);
@@ -651,7 +649,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateRotationY<T>(T radians, in Vector3<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T c = T.Cos(radians);
             T s = T.Sin(radians);
@@ -679,7 +677,7 @@ namespace System.Numerics
         /// <param name="radians">The amount, in radians, by which to rotate around the Z-axis.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateRotationZ<T>(T radians)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T c = T.Cos(radians);
             T s = T.Sin(radians);
@@ -703,7 +701,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
         public static Matrix4x4<T> CreateRotationZ<T>(T radians, in Vector3<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T c = T.Cos(radians);
             T s = T.Sin(radians);
@@ -731,7 +729,7 @@ namespace System.Numerics
         /// <param name="scale">The uniform scaling factor.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix4x4<T> CreateScale<T>(T scale)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
@@ -746,7 +744,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix4x4<T> CreateScale<T>(T scale, in Vector3<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T tx = centerPoint.X * (T.One - scale);
             T ty = centerPoint.Y * (T.One - scale);
@@ -770,7 +768,7 @@ namespace System.Numerics
         /// <param name="scaleZ">The value to scale by on the Z axis.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix4x4<T> CreateScale<T>(T scaleX, T scaleY, T scaleZ)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
@@ -787,7 +785,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix4x4<T> CreateScale<T>(T scaleX, T scaleY, T scaleZ, in Vector3<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T tx = centerPoint.X * (T.One - scaleX);
             T ty = centerPoint.Y * (T.One - scaleY);
@@ -808,7 +806,7 @@ namespace System.Numerics
         /// <param name="scale">The scale to use.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix4x4<T> CreateScale<T>(in Vector3<T> scale)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
@@ -823,7 +821,7 @@ namespace System.Numerics
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
         public static Matrix4x4<T> CreateScale<T>(in Vector3<T> scale, in Vector3<T> centerPoint)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T tx = centerPoint.X * (T.One - scale.X);
             T ty = centerPoint.Y * (T.One - scale.Y);
@@ -845,7 +843,7 @@ namespace System.Numerics
         /// <param name="plane">The plane onto which the new matrix should flatten geometry so as to cast a shadow.</param>
         /// <returns>A new matrix that can be used to flatten geometry onto the specified plane from the specified direction.</returns>
         public static Matrix4x4<T> CreateShadow<T>(in Vector3<T> lightDirection, in Plane<T> plane)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             Plane<T> p = PlaneS.Normalize(plane);
 
@@ -882,7 +880,7 @@ namespace System.Numerics
         /// <param name="positionZ">The amount to translate on the Z axis.</param>
         /// <returns>The translation matrix.</returns>
         public static Matrix4x4<T> CreateTranslation<T>(T positionX, T positionY, T positionZ)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
@@ -896,7 +894,7 @@ namespace System.Numerics
         /// <param name="position">The amount to translate in each axis.</param>
         /// <returns>The translation matrix.</returns>
         public static Matrix4x4<T> CreateTranslation<T>(in Vector3<T> position)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return Matrix4x4<T>.Identity with
             {
@@ -913,7 +911,7 @@ namespace System.Numerics
         /// <returns>The world matrix.</returns>
         /// <remarks><paramref name="position" /> is used in translation operations.</remarks>
         public static Matrix4x4<T> CreateWorld<T>(in Vector3<T> position, in Vector3<T> forward, in Vector3<T> up)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             Vector3<T> zaxis = Vector3S.Normalize(-forward);
             Vector3<T> xaxis = Vector3S.Normalize(Vector3S.Cross(up, zaxis));
@@ -947,7 +945,7 @@ namespace System.Numerics
         /// <param name="translation">When the method returns, contains the translation component of the transformation matrix if the operation succeeded.</param>
         /// <returns><see langword="true" /> if <paramref name="matrix" /> was decomposed successfully; otherwise,  <see langword="false" />.</returns>
         public static bool Decompose<T>(in Matrix4x4<T> matrix, out Vector3<T> scale, out Quaternion<T> rotation, out Vector3<T> translation)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             bool result = true;
 
@@ -1151,7 +1149,7 @@ namespace System.Numerics
         /// <returns><see langword="true" /> if <paramref name="matrix" /> was converted successfully; otherwise,  <see langword="false" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Invert<T>(in Matrix4x4<T> matrix, out Matrix4x4<T> result)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             // This implementation is based on the DirectX Math Library XMMatrixInverse method
             // https://github.com/microsoft/DirectXMath/blob/master/Inc/DirectXMathMatrix.inl
@@ -1325,7 +1323,7 @@ namespace System.Numerics
         /// <param name="amount">The relative weighting of <paramref name="max" />.</param>
         /// <returns>The interpolated matrix.</returns>
         public static Matrix4x4<T> Lerp<T>(in Matrix4x4<T> min, in Matrix4x4<T> max, T amount)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new()
             {
@@ -1360,7 +1358,7 @@ namespace System.Numerics
         /// <param name="rotation">The rotation t apply.</param>
         /// <returns>The transformed matrix.</returns>
         public static Matrix4x4<T> Transform<T>(in Matrix4x4<T> value, in Quaternion<T> rotation)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             // Compute rotation matrix.
             T x2 = rotation.X + rotation.X;
@@ -1421,7 +1419,7 @@ namespace System.Numerics
         /// <param name="value">The matrix to transpose.</param>
         /// <returns>The transposed matrix.</returns>
         public static Matrix4x4<T> Transpose<T>(in Matrix4x4<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return new()
             {

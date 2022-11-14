@@ -4,7 +4,6 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Text;
 
 namespace System.Numerics
@@ -15,14 +14,13 @@ namespace System.Numerics
     /// [!INCLUDE[vectors-are-rows-paragraph](~/includes/system-numerics-vectors-are-rows.md)]
     /// ]]></format></remarks>
     [Intrinsic]
-    [RequiresPreviewFeatures]
     public readonly record struct Vector4<T> :
         IAdditionOperators<Vector4<T>, Vector4<T>, Vector4<T>>,
         IAdditiveIdentity<Vector4<T>, Vector4<T>>,
         IDivisionOperators<Vector4<T>, Vector4<T>, Vector4<T>>,
         IDivisionOperators<Vector4<T>, T, Vector4<T>>,
         IEquatable<Vector4<T>>,
-        IEqualityOperators<Vector4<T>, Vector4<T>>,
+        IEqualityOperators<Vector4<T>, Vector4<T>, bool>,
         IFormattable,
         IMultiplicativeIdentity<Vector4<T>, Vector4<T>>,
         IMultiplyOperators<Vector4<T>, Vector4<T>, Vector4<T>>,
@@ -30,7 +28,7 @@ namespace System.Numerics
         ISubtractionOperators<Vector4<T>, Vector4<T>, Vector4<T>>,
         IUnaryNegationOperators<Vector4<T>, Vector4<T>>,
         IUnaryPlusOperators<Vector4<T>, Vector4<T>>
-    where T : struct, IFloatingPoint<T>
+    where T : struct, IFloatingPointIeee754<T>
     {
         // Fields
 

@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 
 namespace System.Numerics
 {
-    [RequiresPreviewFeatures]
     public partial struct PlaneS
     {
         // Static Methods
@@ -18,7 +16,7 @@ namespace System.Numerics
         /// <returns>The plane containing the three points.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Plane<T> CreateFromVertices<T>(in Vector3<T> point1, in Vector3<T> point2, in Vector3<T> point3)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             T ax = point2.X - point1.X;
             T ay = point2.Y - point1.Y;
@@ -53,7 +51,7 @@ namespace System.Numerics
         /// <returns>The dot product.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Dot<T>(in Plane<T> left, in Vector4<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left.Normal.X * right.X +
                    left.Normal.Y * right.Y +
@@ -67,7 +65,7 @@ namespace System.Numerics
         /// <returns>The dot product.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T DotCoordinate<T>(in Plane<T> left, in Vector3<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left.Normal.X * right.X +
                    left.Normal.Y * right.Y +
@@ -81,7 +79,7 @@ namespace System.Numerics
         /// <returns>The dot product.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T DotNormal<T>(in Plane<T> left, in Vector3<T> right)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             return left.Normal.X * right.X +
                    left.Normal.Y * right.Y +
@@ -93,9 +91,9 @@ namespace System.Numerics
         /// <returns>The normalized plane.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Plane<T> Normalize<T>(in Plane<T> value)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            T normalizeEpsilon = T.Create(1.192092896e-07); // smallest such that 1.0+NormalizeEpsilon != 1.0
+            T normalizeEpsilon = T.CreateChecked(1.192092896e-07); // smallest such that 1.0+NormalizeEpsilon != 1.0
 
             T f = value.Normal.X * value.Normal.X + value.Normal.Y * value.Normal.Y + value.Normal.Z * value.Normal.Z;
 
@@ -120,7 +118,7 @@ namespace System.Numerics
         /// <remarks><paramref name="plane" /> must already be normalized so that its <see cref="System.Numerics.Plane.Normal" /> vector is of unit length before this method is called.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Plane<T> Transform<T>(in Plane<T> plane, in Matrix4x4<T> matrix)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             Matrix4x4S.Invert(matrix, out Matrix4x4<T> m);
 
@@ -140,7 +138,7 @@ namespace System.Numerics
         /// <remarks><paramref name="plane" /> must already be normalized so that its <see cref="System.Numerics.Plane.Normal" /> vector is of unit length before this method is called.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Plane<T> Transform<T>(in Plane<T> plane, in Quaternion<T> rotation)
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
             // Compute rotation matrix.
             T x2 = rotation.X + rotation.X;

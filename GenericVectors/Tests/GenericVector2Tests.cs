@@ -1,12 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Runtime.Versioning;
 using Xunit;
 
 namespace System.Numerics.Tests
 {
-    [RequiresPreviewFeatures]
     public class GenericVector2Tests
     {
         // A test for operator + (Vector2, Vector2)
@@ -18,12 +16,12 @@ namespace System.Numerics.Tests
         public void Vector2AdditionTestDouble() => Vector2AdditionTest<double>();
 
         private static void Vector2AdditionTest<T>()
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            Vector2<T> a = new Vector2<T>(T.One, T.Create(2.0));
-            Vector2<T> b = new Vector2<T>(T.Create(3.0), T.Create(4.0));
+            Vector2<T> a = new Vector2<T>(T.One, T.CreateChecked(2.0));
+            Vector2<T> b = new Vector2<T>(T.CreateChecked(3.0), T.CreateChecked(4.0));
 
-            Vector2<T> expected = new Vector2<T>(T.Create(4.0), T.Create(6.0));
+            Vector2<T> expected = new Vector2<T>(T.CreateChecked(4.0), T.CreateChecked(6.0));
             Vector2<T> actual;
 
             actual = a + b;
@@ -39,9 +37,9 @@ namespace System.Numerics.Tests
         public void Vector2AdditiveIdentityDoubleTest() => Vector2AdditiveIdentityTest<double>();
 
         static void Vector2AdditiveIdentityTest<T>()
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            Vector2<T> v1 = new Vector2<T>(T.Create(42), T.Create(142));
+            Vector2<T> v1 = new Vector2<T>(T.CreateChecked(42), T.CreateChecked(142));
             Vector2<T> actual = Add(v1);
             Vector2<T> expected = v1;
             Assert.Equal(actual, expected);
@@ -61,9 +59,9 @@ namespace System.Numerics.Tests
         public void Vector2MultiplicativeIdentityDoubleTest() => Vector2MultiplicativeIdentityTest<double>();
 
         static void Vector2MultiplicativeIdentityTest<T>()
-            where T : struct, IFloatingPoint<T>
+            where T : struct, IFloatingPointIeee754<T>
         {
-            Vector2<T> v1 = new Vector2<T>(T.Create(42), T.Create(142));
+            Vector2<T> v1 = new Vector2<T>(T.CreateChecked(42), T.CreateChecked(142));
             Vector2<T> actual = Multiply(v1);
             Vector2<T> expected = v1;
             Assert.Equal(actual, expected);

@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using System.Text;
 
 namespace System.Numerics
@@ -13,12 +12,11 @@ namespace System.Numerics
     /// [!INCLUDE[vectors-are-rows-paragraph](~/includes/system-numerics-vectors-are-rows.md)]
     /// ]]></format></remarks>
     [Intrinsic]
-    [RequiresPreviewFeatures]
     public readonly record struct Plane<T> :
         IEquatable<Plane<T>>,
-        IEqualityOperators<Plane<T>, Plane<T>>,
+        IEqualityOperators<Plane<T>, Plane<T>, bool>,
         IFormattable
-        where T : struct, IFloatingPoint<T>
+        where T : struct, IFloatingPointIeee754<T>
     {
         // Fields
 

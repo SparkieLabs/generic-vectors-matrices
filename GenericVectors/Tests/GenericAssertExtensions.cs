@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Numerics;
-using System.Runtime.Versioning;
 using Xunit;
 
 namespace System
 {
-    [RequiresPreviewFeatures]
     public static class GenericAssertExtensions
     {
         private const int Precision = 5;

@@ -4,7 +4,6 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Text;
 
 #pragma warning disable CA2201 // Do not raise reserved exception types
@@ -16,14 +15,13 @@ namespace System.Numerics
     /// [!INCLUDE[vectors-are-rows-paragraph](~/includes/system-numerics-vectors-are-rows.md)]
     /// ]]></format></remarks>
     [Intrinsic]
-    [RequiresPreviewFeatures]
     public readonly record struct Vector2<T> :
         IAdditionOperators<Vector2<T>, Vector2<T>, Vector2<T>>,
         IAdditiveIdentity<Vector2<T>, Vector2<T>>,
         IDivisionOperators<Vector2<T>, Vector2<T>, Vector2<T>>,
         IDivisionOperators<Vector2<T>, T, Vector2<T>>,
         IEquatable<Vector2<T>>,
-        IEqualityOperators<Vector2<T>, Vector2<T>>,
+        IEqualityOperators<Vector2<T>, Vector2<T>, bool>,
         IFormattable,
         IMultiplicativeIdentity<Vector2<T>, Vector2<T>>,
         IMultiplyOperators<Vector2<T>, Vector2<T>, Vector2<T>>,
@@ -31,7 +29,7 @@ namespace System.Numerics
         ISubtractionOperators<Vector2<T>, Vector2<T>, Vector2<T>>,
         IUnaryNegationOperators<Vector2<T>, Vector2<T>>,
         IUnaryPlusOperators<Vector2<T>, Vector2<T>>
-        where T : struct, IFloatingPoint<T>
+        where T : struct, IFloatingPointIeee754<T>
     {
         // Fields
 

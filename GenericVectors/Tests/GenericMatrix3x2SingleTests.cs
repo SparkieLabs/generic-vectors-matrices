@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using Xunit;
 using GMatrix3x2 = System.Numerics.Matrix3x2<float>;
 using GMatrix4x4 = System.Numerics.Matrix4x4<float>;
@@ -12,7 +11,6 @@ using GVector4 = System.Numerics.Vector4<float>;
 
 namespace System.Numerics.Tests
 {
-    [RequiresPreviewFeatures]
     public class GenericMatrix3x2SingleTests
     {
         static GMatrix3x2 GenerateIncrementalMatrixNumber(GScalar value = 0)

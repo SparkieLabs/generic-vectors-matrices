@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using System.Text;
 
 namespace System.Numerics
@@ -13,12 +12,11 @@ namespace System.Numerics
     /// [!INCLUDE[vectors-are-rows-paragraph](~/includes/system-numerics-vectors-are-rows.md)]
     /// ]]></format></remarks>
     [Intrinsic]
-    [RequiresPreviewFeatures]
     public readonly record struct Matrix3x2<T> :
         IAdditionOperators<Matrix3x2<T>, Matrix3x2<T>, Matrix3x2<T>>,
         IAdditiveIdentity<Matrix3x2<T>, Matrix3x2<T>>,
         IEquatable<Matrix3x2<T>>,
-        IEqualityOperators<Matrix3x2<T>, Matrix3x2<T>>,
+        IEqualityOperators<Matrix3x2<T>, Matrix3x2<T>, bool>,
         IFormattable,
         IMultiplicativeIdentity<Matrix3x2<T>, Matrix3x2<T>>,
         IMultiplyOperators<Matrix3x2<T>, Matrix3x2<T>, Matrix3x2<T>>,
@@ -26,7 +24,7 @@ namespace System.Numerics
         ISubtractionOperators<Matrix3x2<T>, Matrix3x2<T>, Matrix3x2<T>>,
         IUnaryNegationOperators<Matrix3x2<T>, Matrix3x2<T>>,
         IUnaryPlusOperators<Matrix3x2<T>, Matrix3x2<T>>
-        where T : struct, IFloatingPoint<T>
+        where T : struct, IFloatingPointIeee754<T>
     {
         // Fields
 
